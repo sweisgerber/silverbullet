@@ -54,8 +54,8 @@ jobs:
         with:
           images: |
             # See the 2 different image names for docker-hub & ghcr
-            ${{ NAMESPACE_DOCKER }}/${{ IMAGE_NAME }}
-            ghcr.io/${{ NAMESPACE_GITHUB }}/${{ IMAGE_NAME }}
+            ${{ env.NAMESPACE_DOCKER }}/${{ env.IMAGE_NAME }}
+            ghcr.io/${{ env.NAMESPACE_GITHUB }}/${{ env.IMAGE_NAME }}
           tags: |
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
