@@ -47,20 +47,27 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+      #
+      # MetaData Extract Docu: <https://github.com/docker/metadata-action>
+      #
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v4.4.0
         with:
           images: |
-            # See the 2 different image names for docker-hub & ghcr
+            # See the 2 different image names(paces) for docker-hub & ghcr
             ${{ env.NAMESPACE_DOCKER }}/${{ env.IMAGE_NAME }}
             ghcr.io/${{ env.NAMESPACE_GITHUB }}/${{ env.IMAGE_NAME }}
           tags: |
+            # <https://github.com/docker/metadata-action#typeref>
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
-            type=schedule
-            type=ref,event=tag
+            # tag branches (disabled)
+            type=ref,event=branch,enable=false
+            # tag w/ git tags event
+            type=ref,event=tag,enable=true
+            # tag pull request event
+            type=ref,event=pr,enable=true
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v4.0.0
