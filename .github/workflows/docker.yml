@@ -63,17 +63,17 @@ jobs:
           tags: |
             # <https://github.com/docker/metadata-action#typeref>
             # minimal (short sha)
-            type=sha
+            type=sha,enable=true,priority=100,prefix=commit-,suffix=,format=short
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
             # tag w/ full tag part of git tag: <https://github.com/docker/metadata-action#typesemver>
             type=semver,pattern={{raw}},enable=true
-            type=edge,branch=feature/docker-ghcr
+            type=edge,branch=main # usually this would be the develop branch
+            # defaults
             type=schedule
             type=ref,event=branch
             type=ref,event=tag
             type=ref,event=pr
-            type=raw,foo
       - name: Build and push Docker images
         uses: docker/build-push-action@v4.0.0
         with:
