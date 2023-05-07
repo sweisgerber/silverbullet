@@ -36,12 +36,14 @@ jobs:
           deno task bundle
 
       - name: Login to Docker Hub
+        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Log in to the ghcr Container registry
+        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -62,12 +64,8 @@ jobs:
             # <https://github.com/docker/metadata-action#typeref>
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
-            # tag branches (disabled)
-            type=ref,event=branch,enable=false
-            # tag w/ git tags event
-            type=ref,event=tag,enable=true
-            # tag pull request event
-            type=ref,event=pr,enable=true
+            # tag w/ version part of git tag: <https://github.com/docker/metadata-action#typesemver>
+            type=semver,pattern={{version}},enable=true
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v4.0.0
