@@ -5,6 +5,7 @@ on:
     branches: ["main"]
 env:
   DENO_VERSION: v1.32.5
+  ARCHITECTURES: linux/amd64,linux/arm64
   IMAGE_NAME: silverbullet
   # change namespaces before merging to silverbullet main branch
   NAMESPACE_GITHUB: sweisgerber
@@ -20,12 +21,12 @@ jobs:
       - name: Set up QEMU for multi-arch builds with buildx
         uses: docker/setup-qemu-action@v2
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ env.ARCHITECTURES }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ env.ARCHITECTURES }}
 
       - name: Setup Deno
         uses: denoland/setup-deno@d4873ceeec10de6275fecd1f94b6985369d40231
@@ -63,22 +64,18 @@ jobs:
           tags: |
             # <https://github.com/docker/metadata-action#typeref>
             # minimal (short sha)
-            type=sha,enable=true,priority=100,prefix=commit-,suffix=,format=short
+            # type=sha,enable=true,priority=100,prefix=commit-,suffix=,format=short
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
             # tag w/ full tag part of git tag: <https://github.com/docker/metadata-action#typesemver>
             type=semver,pattern={{raw}},enable=true
-            type=edge,branch=main # usually this would be the develop branch
-            # defaults
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
+            # type=edge,branch=main # usually this would be the develop branch
+
       - name: Build and push Docker images
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ env.ARCHITECTURES }}
           push: true
           provenance: false
           tags: ${{ steps.meta.outputs.tags }}
