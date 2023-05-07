@@ -68,7 +68,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
             # tag w/ full tag part of git tag: <https://github.com/docker/metadata-action#typesemver>
             type=semver,pattern={{raw}},enable=true
-            type=edge,branch="feature/docker-ghcr"
+            type=edge,branch=feature/docker-ghcr
             type=schedule
             type=ref,event=branch
             type=ref,event=tag
