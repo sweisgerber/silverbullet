@@ -2,7 +2,10 @@ name: Docker
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - "main"
+    tags:
+      - "*"
 env:
   DENO_VERSION: v1.32.5
   ARCHITECTURES: linux/amd64,linux/arm64
